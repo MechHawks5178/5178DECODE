@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near")
-public class AutoModeNear extends HwInit {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Blue")
+public class AutoModeNearBlue extends HwInit {
 
     public void init()
     {
@@ -11,32 +11,41 @@ public class AutoModeNear extends HwInit {
     @Override
     public void start()
     {
-        go_backwards();
-        // start at wall closest from goal
+
+        // start touching Blue goal
         // start with robot aimed correctly at goal
-        // start with part of robot touching back wall
+        // start with part of robot touching  goal
         // start within or touching shooting line (triangle)
         // start with artifacts loaded in correct motif with first ball to shoot in position
 
         // actions
-        //go to good shoot place
         // turn shooter motor on to far speed
         shooter_on_near();
+
+        //go to good shoot place
+        posStraight(2.5f,1500, -1, 1);
+
+        try{
+            //TODO: adjust this time if needed
+            sleep(500);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
         // raise shooter lift
         run_lift();
         // turn carousel to next shoot position
-//TODO: use new move to shoot blocking
-        move_to_load_from_shoot();
-        move_to_shoot_from_load();
+        move_to_next_shoot_blocking();
         // raise shooter lift
         run_lift();
         // turn carousel to next shoot position
-        move_to_load_from_shoot();
-        move_to_shoot_from_load();
+        move_to_next_shoot_blocking();
         // raise shooter lift
         run_lift();
-        // drive forward out of shoot zone
-        go_backwards();
+        shooter_off();
+        // drive out of shoot zone
+        posStrafe(1,1500, -1,1);
         //TODO: probably backwards. think about how you can do this the same on
         //  both sides so you can ignore red/blue. what if other robot is in your spot?
 

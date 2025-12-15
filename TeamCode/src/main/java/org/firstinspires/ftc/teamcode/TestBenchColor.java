@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -12,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TestBenchColor {
     NormalizedColorSensor colorSensor;
-    public enum detectedColor {
+    public enum DetectedColor {
         GREEN,
         PURPLE,
         UNKNOWN

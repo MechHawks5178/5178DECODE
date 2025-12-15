@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
+
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Blue")
-public class AutoModeNearBlue extends HwInit {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Red")
+public class AutoModeNearRed extends HwInit {
 
     public void init()
     {
@@ -12,7 +13,7 @@ public class AutoModeNearBlue extends HwInit {
     public void start()
     {
 
-        // start touching Blue goal
+        // start touching Red goal
         // start with robot aimed correctly at goal
         // start with part of robot touching  goal
         // start within or touching shooting line (triangle)
@@ -22,7 +23,15 @@ public class AutoModeNearBlue extends HwInit {
         // turn shooter motor on to far speed
         shooter_on_near();
         //go to good shoot place
-        posStraight(3.5f,1500, -1, 0);
+        posStraight(2.5f,1500, -1, 1);
+        try{
+            //TODO: adjust this time if needed
+            sleep(500);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
 
         // raise shooter lift
         run_lift();
@@ -34,9 +43,10 @@ public class AutoModeNearBlue extends HwInit {
         move_to_next_shoot_blocking();
         // raise shooter lift
         run_lift();
+        shooter_off();
         // drive out of shoot zone
-        posStrafe(1,1500, -1,0);
-        //TODO: probably backwards. think about how you can do this the same on
+        posStrafe(1,1500, 1,1);
+        //TODO:  think about how you can do this the same on
         //  both sides so you can ignore red/blue. what if other robot is in your spot?
 
 

@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far Blue")
-public class AutoModeFarBlue extends HwInit {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far")
+public class AutoModeFar extends HwInit {
 
     boolean DEBUG_ON = false;
 
