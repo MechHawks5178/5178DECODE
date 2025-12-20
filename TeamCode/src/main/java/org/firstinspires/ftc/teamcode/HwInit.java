@@ -219,18 +219,18 @@ public abstract class HwInit extends OpMode
        }
     }
 
-    public void move_to_shoot_from_load()
+    public void move_to_shoot_from_load(int dir)
     {
-        carousel.setPower(carousel_speed);
+        carousel.setPower(dir * carousel_speed);
         if(ShootSw.isLimitSwitchClosed())
         {
             carousel.setPower(0.0);
             move_to_shoot = false;
         }
     }
-    public void move_to_load_from_shoot()
+    public void move_to_load_from_shoot(int dir)
     {
-        carousel.setPower(carousel_speed);
+        carousel.setPower(dir * carousel_speed);
         if(LoadSw.isLimitSwitchClosed())
         {
             carousel.setPower(0.0);

@@ -5,7 +5,7 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Mechawks-Tele-1")
-public class TeleOpMode extends HwInit {
+public class   TeleOpMode extends HwInit {
 //far and mid use the trigger buttons which are analog,
 // but near is on the bumper which is just on/off
   float shooter_far_on = 0.0F;
@@ -13,6 +13,8 @@ public class TeleOpMode extends HwInit {
   boolean shooter_near_on = false;
   boolean intake_on = false;
   boolean intake_clear = false;
+
+  int carousel_dir = 1;
 
 
 
@@ -41,11 +43,11 @@ public class TeleOpMode extends HwInit {
         }
         if (move_to_load)
         {
-            move_to_load_from_shoot();
+            move_to_load_from_shoot(carousel_dir);
         }
         if (move_to_shoot)
         {
-            move_to_shoot_from_load();
+            move_to_shoot_from_load(carousel_dir);
         }
 
         run_motors();
@@ -157,7 +159,18 @@ public class TeleOpMode extends HwInit {
     }
     public void do_p2_things() {
 
-        carousel_on = gamepad2.x;
+        carousel_on = (gamepad2.x || gamepad2.b);
+
+        if (gamepad2.xWasPressed())
+        {
+            carousel_dir = 1;
+        }
+
+        if (gamepad2.bWasPressed())
+        {
+             carousel_dir = -1;
+        }
+
         intake_on = gamepad2.dpad_up;
         intake_clear = gamepad2.dpad_down;
         shooter_near_on = gamepad2.left_bumper;
