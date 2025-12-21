@@ -13,7 +13,6 @@ public class   TeleOpMode extends HwInit {
   boolean shooter_near_on = false;
   boolean intake_on = false;
   boolean intake_clear = false;
-
   int carousel_dir = 1;
 
 
@@ -75,19 +74,17 @@ public class   TeleOpMode extends HwInit {
             lift.setPower(0);
         }
 
-        if (intake_on){
-            intake.setPower(0.80);
-        }else
+        if (intake_on)
+        {
+            intake.setPower(0.8);
+        }
+        else if (intake_clear)
+        {
+            intake.setPower(-0.4);
+        }
+        else
         {
             intake.setPower(0);
-        }
-
-        if (intake_clear)
-        {
-            intake.setPower(0.50);
-        }else
-        {
-            intake.setPower(0.0);
         }
 
         if (shooter_mid_on > 0.23)
