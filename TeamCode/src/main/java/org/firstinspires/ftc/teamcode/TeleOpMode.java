@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -16,6 +18,10 @@ public class   TeleOpMode extends HwInit {
   boolean intake_on = false;
   boolean intake_clear = false;
   double carousel_dir = 1;
+  ElapsedTime lift_up_timer = new ElapsedTime(MILLISECONDS);
+  double lift_up_time_limit = 2100;
+  boolean move_lift_up = false;
+  boolean move_lift_down = false;
 
 
 
@@ -72,10 +78,28 @@ public class   TeleOpMode extends HwInit {
         if (lift_on) {
             if (ShootSw.isLimitSwitchClosed())
             {
-                run_lift();
+                move_lift_up = true;
+                lift_up_timer.reset();
             }
-        }else {
-            lift.setPower(0);
+        }
+        if(move_lift_up)
+        {
+            lift.setPower(1);
+            if (lift_up_timer.time() >= lift_up_time_limit)
+            {
+                lift.setPower(0);
+                move_lift_up = false;
+                move_lift_down = true;
+            }
+        }
+        if (move_lift_down)
+        {
+            lift.setPower(-1);
+            if (shooterPosSw.isLimitSwitchPressed())
+            {
+                lift.setPower(0);
+                move_lift_down = false;
+            }
         }
 
         if (intake_on)
