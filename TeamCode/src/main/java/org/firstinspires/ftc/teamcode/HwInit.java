@@ -37,7 +37,7 @@ public abstract class HwInit extends OpMode
     TouchSwitch shooterPosSw = new TouchSwitch();
     ColorSensor color_sense = new ColorSensor();
     Limelight3A limelight;
-    Servo RGB_light;
+    RGBlight RGB_light;
 
     double speed;
     double speed_fine_inc = 0.05;
@@ -85,7 +85,7 @@ public abstract class HwInit extends OpMode
         ShootSw.init(hardwareMap, "shoot_switch");
         shooterPosSw.init(hardwareMap, "shoot_pos_switch");
         color_sense.init(hardwareMap, "color_sensor");
-        RGB_light = hardwareMap.get(Servo.class, "rgb_light");
+        RGB_light.init(hardwareMap, "rgb_light");
 
         IMUinit();
         LLinit();
@@ -315,18 +315,21 @@ public abstract class HwInit extends OpMode
     {
         switch (color) {
             case "PURPLE":
-                RGB_light.setPosition(0.700);
+                RGB_light.light_on(0.700);
+                break;
+            case "BLUE":
+                RGB_light.light_on(0.600);
                 break;
             case "GREEN":
-                RGB_light.setPosition(0.500);
+                RGB_light.light_on(0.500);
                 break;
             case "RED":
-                RGB_light.setPosition(.275);
+                RGB_light.light_on(.275);
                 break;
             case "UNK":
-                RGB_light.setPosition(0.0);
+                RGB_light.light_off();
             default:
-                RGB_light.setPosition(0.0);
+                RGB_light.light_off();
 
         }
     }
