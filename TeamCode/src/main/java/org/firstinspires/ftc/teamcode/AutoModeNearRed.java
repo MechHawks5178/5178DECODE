@@ -8,6 +8,7 @@ public class AutoModeNearRed extends HwInit
     @Override
     public void init() {
         Hw_init();
+        update_light("RED");
     }
 
     @Override
