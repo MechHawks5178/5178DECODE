@@ -59,8 +59,11 @@ public class AutoModeNearRed extends HwInit
 
         //shoot
         try{
+            lift.setPower(-1);
             //TODO: adjust this time if needed
-            sleep(1300);
+            sleep(200);
+            lift.setPower(0);
+            sleep(700);
         }
         catch (InterruptedException e)
         {

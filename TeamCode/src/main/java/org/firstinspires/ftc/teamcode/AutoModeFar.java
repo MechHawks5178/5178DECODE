@@ -56,8 +56,11 @@ public class AutoModeFar extends HwInit {
       // turn shooter motor on to far speed
       shooter_on_far();
       try{
+          lift.setPower(-1);
+          sleep(200);
+          lift.setPower(0);
           //TODO: adjust this time if needed
-          sleep(1200);
+          sleep(1400);
       }
       catch (InterruptedException e)
       {

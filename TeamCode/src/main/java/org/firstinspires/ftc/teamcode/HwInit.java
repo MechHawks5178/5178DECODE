@@ -251,7 +251,7 @@ public abstract class HwInit extends OpMode
     {
         try {
             lift.setPower(1);
-            sleep(1000);
+            sleep(1200);
             do {
                 lift.setPower(-1);
             }while(!shooterPosSw.isLimitSwitchPressed());

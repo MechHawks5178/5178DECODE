@@ -144,7 +144,7 @@ public class   TeleOpMode extends HwInit {
 
         if (intake_on)
         {
-            intake.setPower(0.8);
+            intake.setPower(0.9);
         }
         else if (intake_clear)
         {
