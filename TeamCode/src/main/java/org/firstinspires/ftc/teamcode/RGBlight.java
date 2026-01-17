@@ -21,6 +21,7 @@ public class RGBlight {
 
     public void light_on(double value)
     {
+        stop_blink();
         light.setPosition(value);
     }
     public void light_off()
