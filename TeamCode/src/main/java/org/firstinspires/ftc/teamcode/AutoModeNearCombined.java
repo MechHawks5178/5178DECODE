@@ -52,7 +52,7 @@ public class AutoModeNearCombined extends HwInit
 
         //rotate 45 degrees
         if (current_alliance == 20) {
-            posTurn(0.5F, 1500, 1, 1);
+            posTurn(0.5F, 1500, 1, 1);it 
         } else if (current_alliance == 24) {
             posTurn(0.5F, 1500, -1, 1);
         }
