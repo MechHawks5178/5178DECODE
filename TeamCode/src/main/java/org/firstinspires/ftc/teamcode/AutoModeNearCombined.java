@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Blue")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Combined")
 public class AutoModeNearCombined extends HwInit
 {
     @Override
     public void init() {
         Hw_init();
-
     }
 
     @Override
@@ -16,16 +15,18 @@ public class AutoModeNearCombined extends HwInit
     {
         // drive backwards within shoot zone
         posStraight(2.5F,1500, -1, 1);
-       LimeLightRead();
+        LimeLightRead();
 
-       if (current_tag == 20){
-           update_light("BLUE");
+        if (current_tag == 20){
+            update_light("BLUE");
             current_alliance = 20;
 
-       } else if (current_tag == 24) {
-           update_light("RED");
-           current_alliance = 24;
-       }
+        } else if (current_tag == 24) {
+            update_light("RED");
+            current_alliance = 24;
+        }
+
+        telemetry.addData("Alliance: ", current_alliance);
 
         char[] load_pattern = {'P','P','G'};
         int carousel_pos = 0;
@@ -52,7 +53,7 @@ public class AutoModeNearCombined extends HwInit
 
         //rotate 45 degrees
         if (current_alliance == 20) {
-            posTurn(0.5F, 1500, 1, 1);it 
+            posTurn(0.5F, 1500, 1, 1);
         } else if (current_alliance == 24) {
             posTurn(0.5F, 1500, -1, 1);
         }
@@ -105,7 +106,12 @@ public class AutoModeNearCombined extends HwInit
         }
 
         // drive out of shoot zone
-        posStrafe(1,1500, -1,1);
+        if (current_alliance == 20) {
+            posStrafe(1, 1500, -1, 1);
+        } else if (current_alliance == 24) {
+            posStrafe(1, 1500, 1, 1);
+        }
+
         shooter_off();
         // ride off into the sunset on a horse named shimmery sparklepink in a girliepop western movie starring Sabrina Carpenter
 

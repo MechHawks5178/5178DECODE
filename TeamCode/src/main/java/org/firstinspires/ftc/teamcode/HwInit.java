@@ -37,7 +37,7 @@ public abstract class HwInit extends OpMode
     TouchSwitch shooterPosSw = new TouchSwitch();
     ColorSensor color_sense = new ColorSensor();
     Limelight3A limelight;
-    RGBlight RGB_light;
+    RGBlight RGB_light = new RGBlight();
 
     double speed;
     double speed_fine_inc = 0.05;
