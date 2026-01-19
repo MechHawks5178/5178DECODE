@@ -21,13 +21,13 @@ public class   TeleOpMode extends HwInit {
   boolean intake_clear = false;
   double carousel_dir = 1;
   ElapsedTime lift_up_timer = new ElapsedTime(MILLISECONDS);
-  double lift_up_time_limit = 900;
+  double lift_up_time_limit = 1100;
   boolean move_lift_up = false;
   boolean move_lift_down = false;
 
   long tick = 0;
 
-
+@Override
     public void init()
     {
         Hw_init();
@@ -40,9 +40,17 @@ public class   TeleOpMode extends HwInit {
         //you probably dont want to do this.
         //telemetry.setAutoClear(false);
     }
+    @Override
+    public void init_loop()
+    {
+        RGB_light.blink(.275);
+    }
 
     @Override
     public void loop() {
+        //RGB_light.blink(.275);
+        double curVelocity = shooter.getVelocity();
+        telemetry.addData("Current Velocity: ", curVelocity);
         double liftPow = lift.getPower();
         telemetry.addData("lift power: ", liftPow);
         Boolean state = LimeLightRead();

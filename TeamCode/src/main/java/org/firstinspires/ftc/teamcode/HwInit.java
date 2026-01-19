@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -29,7 +30,9 @@ public abstract class HwInit extends OpMode
     DcMotorEx frontRightMotor;
     DcMotorEx frontLeftMotor;
     DcMotor intake;
-    DcMotor shooter;
+    DcMotorEx shooter;
+    PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(7.6, 0.0 ,0.0,15.2); //1780 RPM
+    PIDFCoefficients pidfCoefMed = new PIDFCoefficients(9.92, 0.0 ,0.0,15.19); //1500 RPM
     CRServo carousel;
     CRServo lift;
     MagneticLimit LoadSw = new MagneticLimit();
@@ -37,7 +40,7 @@ public abstract class HwInit extends OpMode
     TouchSwitch shooterPosSw = new TouchSwitch();
     ColorSensor color_sense = new ColorSensor();
     Limelight3A limelight;
-    RGBlight RGB_light;
+    RGBlight RGB_light = new RGBlight();
 
     double speed;
     double speed_fine_inc = 0.05;
@@ -75,8 +78,11 @@ public abstract class HwInit extends OpMode
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = hardwareMap.dcMotor.get("intake");
-        shooter = hardwareMap.dcMotor.get("shooter");
+
+        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         carousel = hardwareMap.crservo.get("carousel");
         lift = hardwareMap.crservo.get("lift");
@@ -236,15 +242,19 @@ public abstract class HwInit extends OpMode
     }
     public void shooter_on_far()
     {
-        shooter.setPower(0.85);
+        //shooter.setPower(0.85);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefHigh);
+        shooter.setVelocity(1780);
     }
     public void shooter_on_mid()
     {
-        shooter.setPower(0.75);
+        //shooter.setPower(0.75);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooter.setVelocity(1500);
     }
     public void shooter_on_near()
     {
-        shooter.setPower(0.70);
+        //shooter.setPower(0.70);
     }
 
     public void run_lift_blocking()
