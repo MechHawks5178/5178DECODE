@@ -2,46 +2,42 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Blue")
-public class AutoModeNearBlue extends HwInit
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Combined")
+public class AutoModeNearCombined extends HwInit
 {
     @Override
     public void init() {
         Hw_init();
-        update_light("BLUE");
     }
 
     @Override
     public void start()
     {
-        // Assumptions
-        // start at wall closest to pattern tag
-        // start with part of robot touching front wall
-        // start within or touching shooting line (triangle)
-        // start with artifacts loaded with first ball in shoot position below
+        // drive backwards within shoot zone
+        posStraight(2.5F,1500, -1, 1);
+        LimeLightRead();
 
-        //      Intake
-        // Green --- Purple
-        //     \\    //
-        //      Purple
-        //      Shooter
+        if (current_tag == 20){
+            update_light("BLUE");
+            current_alliance = 20;
 
+        } else if (current_tag == 24) {
+            update_light("RED");
+            current_alliance = 24;
+        }
 
-        // actions
+        telemetry.addData("Alliance: ", current_alliance);
 
-        //assumes above load positions and normal Clockwise operation
         char[] load_pattern = {'P','P','G'};
         int carousel_pos = 0;
 
-        // actions
 
-        // drive backwards within shoot zone
-        posStraight(2.5F,1500, -1, 1);
-
-
-
-        //rotate 45 CCW
-        posTurn(0.5F,1500, -1, 1);
+        //rotate 45
+        if (current_alliance == 20) {
+            posTurn(0.5F, 1500, -1, 1);
+        } else if (current_alliance == 24) {
+            posTurn(0.5F, 1500, 1, 1);
+        }
 
         LimeLightRead();
         telemetry.addData("current tag: ", current_tag);
@@ -52,15 +48,16 @@ public class AutoModeNearBlue extends HwInit
         {
             pattern = load_pattern;
         }
-
         // turn shooter motor on to far speed
         shooter_on_mid();
 
-        //rotate 45 CCW
-        posTurn(0.5F,1500, 1, 1);
-
+        //rotate 45 degrees
+        if (current_alliance == 20) {
+            posTurn(0.5F, 1500, 1, 1);
+        } else if (current_alliance == 24) {
+            posTurn(0.5F, 1500, -1, 1);
+        }
         //TODO Verify tag
-
         //shoot
         try{
             lift.setPower(-1);
@@ -108,10 +105,19 @@ public class AutoModeNearBlue extends HwInit
             //update_light("UNK");
         }
 
-
         // drive out of shoot zone
-        posStrafe(1,1500, -1,1);
+        if (current_alliance == 20) {
+            posStrafe(1, 1500, -1, 1);
+        } else if (current_alliance == 24) {
+            posStrafe(1, 1500, 1, 1);
+        }
+
         shooter_off();
+        // ride off into the sunset on a horse named shimmery sparklepink in a girliepop western movie starring Sabrina Carpenter
+
+
+
+
     }
     @Override
     public void loop() {
@@ -133,5 +139,3 @@ public class AutoModeNearBlue extends HwInit
 
 
 }
-
-

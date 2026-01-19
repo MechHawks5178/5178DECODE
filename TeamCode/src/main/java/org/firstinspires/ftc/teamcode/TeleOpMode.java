@@ -24,6 +24,7 @@ public class   TeleOpMode extends HwInit {
   double lift_up_time_limit = 1100;
   boolean move_lift_up = false;
   boolean move_lift_down = false;
+  boolean limelight_read = false;
 
   long tick = 0;
 
@@ -59,6 +60,15 @@ public class   TeleOpMode extends HwInit {
         update_light(color.name());
         do_p1_things();
         do_p2_things();
+
+        if (limelight_read = true){
+            LimeLightRead();
+            if (current_tag == 20){
+                update_light("BLUE");
+            } else if (current_tag == 24) {
+                update_light("RED");
+            }
+        }
 
         if(carousel_on)
         {
@@ -172,11 +182,12 @@ public class   TeleOpMode extends HwInit {
         }else if (shooter_near_on)
         {
             shooter_on_near();
-        }else
-        {
+        }else {
             shooter_off();
         }
+
     }
+
 
     public float avg(float[] nums) {
         int numlen = nums.length;
@@ -237,6 +248,7 @@ public class   TeleOpMode extends HwInit {
         p1_fine_speed_control();
 
         dual_joy_control(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,gamepad1.right_stick_y);
+        limelight_read = gamepad1.right_bumper;
     }
     public void do_p2_things() {
 
