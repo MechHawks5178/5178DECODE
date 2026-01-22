@@ -51,6 +51,8 @@ public class   TeleOpMode extends HwInit {
     @Override
     public void loop() {
         LimeLightLocalize();
+
+
         double curVelocity = shooter.getVelocity();
         telemetry.addData("Current Velocity: ", curVelocity);
         double liftPow = lift.getPower();
@@ -62,7 +64,7 @@ public class   TeleOpMode extends HwInit {
         do_p1_things();
         do_p2_things();
 
-        if (limelight_read == true){
+        if (limelight_read){
             LimeLightRead();
             if (current_tag == 20){
                 update_light("BLUE");

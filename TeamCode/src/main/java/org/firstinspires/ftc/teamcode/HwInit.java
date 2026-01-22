@@ -149,6 +149,7 @@ public abstract class HwInit extends OpMode
     {
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void posDrive(int position, int velocity, float rfDir, float lfDir, float rbDir, float lbDir) {
