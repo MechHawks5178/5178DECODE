@@ -21,7 +21,7 @@ public class   TeleOpMode extends HwInit {
   boolean intake_clear = false;
   double carousel_dir = 1;
   ElapsedTime lift_up_timer = new ElapsedTime(MILLISECONDS);
-  double lift_up_time_limit = 1100;
+  double lift_up_time_limit = 1300;
   boolean move_lift_up = false;
   boolean move_lift_down = false;
   boolean limelight_read = false;
@@ -32,6 +32,7 @@ public class   TeleOpMode extends HwInit {
     public void init()
     {
         Hw_init();
+
         //set drive speed at 0.5 initially
         speed = 0.85;
         //initialise bumpers as "not pressed"
@@ -49,7 +50,7 @@ public class   TeleOpMode extends HwInit {
 
     @Override
     public void loop() {
-        //RGB_light.blink(.275);
+        LimeLightLocalize();
         double curVelocity = shooter.getVelocity();
         telemetry.addData("Current Velocity: ", curVelocity);
         double liftPow = lift.getPower();
@@ -61,7 +62,7 @@ public class   TeleOpMode extends HwInit {
         do_p1_things();
         do_p2_things();
 
-        if (limelight_read = true){
+        if (limelight_read == true){
             LimeLightRead();
             if (current_tag == 20){
                 update_light("BLUE");
@@ -89,6 +90,10 @@ public class   TeleOpMode extends HwInit {
                             .addData("lift_on: lift UP: ", move_lift_up)
                             .addData(" lift DOWN: ", move_lift_down);
                     move_lift_up = true;
+                    lift.setPower(-1);
+                    //TODO: adjust this time if needed
+                    sleep(200);
+                    lift.setPower(0);
                     lift_up_timer.reset();
                 }
             }
@@ -116,7 +121,7 @@ public class   TeleOpMode extends HwInit {
                     lift.setPower(0.0);
                     liftPow = lift.getPower();
 
-                    telemetry.addData("lift poooooooooooooooooooooooooooooooooooooooooower: ", liftPow);
+                    //telemetry.addData("lift poooooooooooooooooooooooooooooooooooooooooower: ", liftPow);
                 }
             /*telemetry.addLine()
                     .addData("end lift down: lift UP: " , move_lift_up)
@@ -248,7 +253,19 @@ public class   TeleOpMode extends HwInit {
         p1_fine_speed_control();
 
         dual_joy_control(gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,gamepad1.right_stick_y);
+        boolean targeted = false;
         limelight_read = gamepad1.right_bumper;
+
+
+        if (limelight_read)
+        {
+            // Turn encoders on, target, turn encoders off
+            pos_drive_init();
+            LimelightTarget();
+            motor_pow_drive_init();
+
+        }
+
     }
     public void do_p2_things() {
 
@@ -270,6 +287,18 @@ public class   TeleOpMode extends HwInit {
         shooter_mid_on = gamepad2.left_trigger;
         shooter_far_on = gamepad2.right_trigger;
         lift_on = gamepad2.yWasPressed();
+        if (gamepad2.aWasPressed())
+        {
+            try {
+                lift.setPower(-1);
+                //TODO: adjust this time if needed
+                sleep(250);
+                lift.setPower(0);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }
