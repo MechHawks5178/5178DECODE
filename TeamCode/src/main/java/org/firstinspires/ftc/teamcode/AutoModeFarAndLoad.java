@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far")
-public class AutoModeFar extends HwInit {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far And Load")
+public class AutoModeFarAndLoad extends HwInit {
 
     boolean DEBUG_ON = false;
 
@@ -132,7 +132,7 @@ public class AutoModeFar extends HwInit {
       // drive forward out of shoot zone
       posStraight(0.95F,1500, 1, 1);
 
-      /*
+
       if (current_alliance == 20) {
           posTurn(0.71F, 1500, 1, 1);
       } else if (current_alliance == 24) {
@@ -161,7 +161,7 @@ public class AutoModeFar extends HwInit {
       }
 
       //posStraight(.2F,1500, 1, 1);
-      intake.setPower(0.0);*/
+      intake.setPower(0.0);
       carousel.setPower(0.0);
   }
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.abs;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public abstract class HwInit extends OpMode
@@ -31,8 +33,10 @@ public abstract class HwInit extends OpMode
     DcMotorEx frontLeftMotor;
     DcMotor intake;
     DcMotorEx shooter;
-    PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(7.6, 0.0 ,0.0,15.2); //1780 RPM
-    PIDFCoefficients pidfCoefMed = new PIDFCoefficients(9.92, 0.0 ,0.0,15.19); //1500 RPM
+    double shootVeloHigh = 1780.0;
+    PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(300.0, 0.0 ,0.0,15.2); //1780 RPM
+    double shootVeloMid = 1500.0;
+    PIDFCoefficients pidfCoefMed = new PIDFCoefficients(300.0, 0.0 ,0.0,15.19); //1500 RPM
     CRServo carousel;
     CRServo lift;
     MagneticLimit LoadSw = new MagneticLimit();
@@ -101,7 +105,11 @@ public abstract class HwInit extends OpMode
 
     private void IMUinit()
     {
-        myIMUParameters= new IMU.Parameters(
+        RevHubOrientationOnRobot hubOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                                                               RevHubOrientationOnRobot.UsbFacingDirection.UP);
+        myIMUParameters = new IMU.Parameters(hubOrientation);
+
+        /*myIMUParameters= new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         new Orientation(
                                 AxesReference.INTRINSIC,
@@ -113,15 +121,15 @@ public abstract class HwInit extends OpMode
                                 0L
                         )
                 )
-        );
+        );*/
         imu.initialize(myIMUParameters);
     }
     private void LLinit()
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
-        limelight.start();
         limelight.pipelineSwitch(0);
+        limelight.start();
         current_tag = 0;
     }
     public void pos_drive_init()
@@ -137,6 +145,13 @@ public abstract class HwInit extends OpMode
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void motor_pow_drive_init()
+    {
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
     public void posDrive(int position, int velocity, float rfDir, float lfDir, float rbDir, float lbDir) {
 
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -171,7 +186,7 @@ public abstract class HwInit extends OpMode
     }
     public void posStraight(float position, int velocity, int direction,float wait) {
         if (position < 0) {
-            position = Math.abs(position);
+            position = abs(position);
             direction = direction * -1;
         }
         posDrive(Math.round(position*posDriveStraightSize),velocity,direction,direction,direction,direction);
@@ -184,7 +199,7 @@ public abstract class HwInit extends OpMode
 
     public void posStrafe(float position, int velocity, int direction, float wait) {
         if (position < 0) {
-            position = Math.abs(position);
+            position = abs(position);
             direction = direction * -1;
         }
         posDrive(Math.round(position*posDriveStrafeSize),velocity,-direction,direction,direction,-direction);
@@ -196,7 +211,7 @@ public abstract class HwInit extends OpMode
     }
     public void posTurn(float position, int velocity, int direction, float wait) {
         if (position < 0) {
-            position = Math.abs(position);
+            position = abs(position);
             direction = direction * -1;
         }
         posDrive(Math.round(position*posDriveTurnSize),velocity,direction,-direction,direction,-direction);
@@ -216,6 +231,53 @@ public abstract class HwInit extends OpMode
             }
         }
         return false;
+    }
+
+    public boolean LimeLightLocalize()
+    {
+        // First, tell Limelight which way your robot is facing
+
+        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw();
+        limelight.updateRobotOrientation(robotYaw);
+        LLResult result  = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            Pose3D botpose_mt2 = result.getBotpose_MT2();
+            if (botpose_mt2 != null) {
+                double x = botpose_mt2.getPosition().x;
+                double y = botpose_mt2.getPosition().y;
+                telemetry.addData("Tx: ", result.getTx());
+                telemetry.addData("Ty: ", result.getTy());
+                telemetry.addData("Ta: ",result.getTa());
+                telemetry.addData("Yaw: ", robotYaw);
+            }
+        }
+        return true;
+    }
+
+    public boolean LimelightTarget()
+    {
+        //TODO: only target on tags 20 and 24
+        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw();
+        limelight.updateRobotOrientation(robotYaw);
+        LLResult result  = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            if (!result.getFiducialResults().isEmpty()) {
+                current_tag = result.getFiducialResults().get(0).getFiducialId();
+            }
+            if (current_tag == 20 || current_tag == 24) {
+
+
+                Pose3D botpose_mt2 = result.getBotpose_MT2();
+                if (botpose_mt2 != null) {
+                    double Tx = result.getTx();
+                    double adjustment = 1.00 / 90 * abs(Tx);
+                    int direction = Tx > 0 ? -1 : 1;
+                    telemetry.addData("adjustment: ", "%.2f %d", adjustment, direction);
+                    posTurn((float) adjustment, 1500, direction, 1);
+                }
+            }
+        }
+        return true;
     }
 
     public char[] tag_to_pattern(int tag)
@@ -244,17 +306,19 @@ public abstract class HwInit extends OpMode
     {
         //shooter.setPower(0.85);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefHigh);
-        shooter.setVelocity(1780);
+        shooter.setVelocity(shootVeloHigh);
     }
     public void shooter_on_mid()
     {
         //shooter.setPower(0.75);
         shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
-        shooter.setVelocity(1500);
+        shooter.setVelocity(shootVeloMid);
     }
     public void shooter_on_near()
     {
         //shooter.setPower(0.70);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooter.setVelocity(shootVeloMid - 50);
     }
 
     public void run_lift_blocking()
@@ -296,7 +360,13 @@ public abstract class HwInit extends OpMode
         {
             carousel.setPower(0.0);
             move_to_shoot = false;
+            /*if (!ShootSw.isLimitSwitchClosed())
+            {
+                carousel.setPower(-1*dir*.01);
+                carousel.setPower(0.0);
+            }*/
         }
+
     }
     public void move_to_load_from_shoot(double dir)
     {
@@ -305,6 +375,11 @@ public abstract class HwInit extends OpMode
         {
             carousel.setPower(0.0);
             move_to_load = false;
+            /*if (!LoadSw.isLimitSwitchClosed())
+            {
+                carousel.setPower(-1*dir*.01);
+                carousel.setPower(0.0);
+            }*/
         }
     }
     public void move_to_next_shoot_blocking(double dir)
@@ -318,6 +393,20 @@ public abstract class HwInit extends OpMode
         do{
             carousel.setPower(dir * carousel_speed);
         } while(!ShootSw.isLimitSwitchClosed());
+        carousel.setPower(0.0);
+    }
+
+    public void move_to_next_load_blocking(double dir)
+    {
+        carousel.setPower(dir * carousel_speed);
+        try{
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        do{
+            carousel.setPower(dir * carousel_speed);
+        } while(!LoadSw.isLimitSwitchClosed());
         carousel.setPower(0.0);
     }
 
