@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far")
-public class AutoModeFar extends HwInit {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Far Comp1")
+public class AutoModeFarComp1 extends HwInit {
 
     boolean DEBUG_ON = false;
 
@@ -39,22 +39,6 @@ public class AutoModeFar extends HwInit {
       // actions
       LimeLightRead();
       telemetry.addData("current tag: ", current_tag);
-      if (current_tag == 20){
-          update_light("BLUE");
-          current_alliance = 20;
-
-      } else if (current_tag == 24) {
-          update_light("RED");
-          current_alliance = 24;
-      }
-
-      if (current_alliance == 20) {
-          posTurn(0.3F, 1500, -1, 1);
-      } else if (current_alliance == 24) {
-          posTurn(0.3F, 1500, 1, 1);
-      }
-
-      LimeLightRead();
       char[] pattern = tag_to_pattern(current_tag);
       //TODO: check for null on pattern. this means it did not find tag 21 - 23 and doesn't know what pattern
       // easy response is just fire what you've got, advanced response is look for it
@@ -68,13 +52,6 @@ public class AutoModeFar extends HwInit {
       /*new Thread() {
           @Override public void run() { blink_pattern(blink); }*/
 
-      if (current_alliance == 20) {
-          posTurn(0.3F, 1500, 1, 1);
-      } else if (current_alliance == 24) {
-          posTurn(0.3F, 1500, -1, 1);
-      }
-
-      LimelightTarget();
 
       // turn shooter motor on to far speed
       shooter_on_far();
@@ -123,46 +100,12 @@ public class AutoModeFar extends HwInit {
           load_pattern[carousel_pos] = 'E';
           //update_light("UNK");
       }
-
+      //TODO: might need a short sleep here to hold the last shoot power
       shooter_off();
-      //prepare to load
-      move_to_next_load_blocking(1);
-
 
       // drive forward out of shoot zone
-      posStraight(0.95F,1500, 1, 1);
+      posStraight(1,1500, 1, 1);
 
-      /*
-      if (current_alliance == 20) {
-          posTurn(0.71F, 1500, 1, 1);
-      } else if (current_alliance == 24) {
-          posTurn(0.71F, 1500, -1, 1);
-      }
-
-      intake.setPower(0.9);
-
-
-      // drive forward to first line
-      posStraight(0.6F,1500, 1, 1);
-      posStraight(0.2F,750, 1, 1);
-
-
-      try {
-
-          sleep(300);
-          move_to_next_load_blocking(1);
-
-          posStraight(.7F,750, 1, 1);
-
-      }
-      catch (InterruptedException e)
-      {
-          throw new RuntimeException(e);
-      }
-
-      //posStraight(.2F,1500, 1, 1);
-      intake.setPower(0.0);*/
-      carousel.setPower(0.0);
   }
 
   @Override

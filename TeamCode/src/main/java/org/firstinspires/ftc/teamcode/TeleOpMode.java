@@ -8,6 +8,8 @@ import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name="Mechawks-Tele-1")
@@ -54,7 +56,9 @@ public class   TeleOpMode extends HwInit {
 
 
         double curVelocity = shooter.getVelocity();
-        telemetry.addData("Current Velocity: ", curVelocity);
+        telemetry.addData("Shooter Velocity: ", curVelocity);
+        double current = shooter.getCurrent(CurrentUnit.MILLIAMPS);
+        telemetry.addData("Shooter current(mA): ", current);
         double liftPow = lift.getPower();
         telemetry.addData("lift power: ", liftPow);
         Boolean state = LimeLightRead();
@@ -88,9 +92,9 @@ public class   TeleOpMode extends HwInit {
         try {
             if (lift_on) {
                 if (ShootSw.isLimitSwitchClosed()) {
-                    telemetry.addLine()
+                    /*telemetry.addLine()
                             .addData("lift_on: lift UP: ", move_lift_up)
-                            .addData(" lift DOWN: ", move_lift_down);
+                            .addData(" lift DOWN: ", move_lift_down);*/
                     move_lift_up = true;
                     lift.setPower(-1);
                     //TODO: adjust this time if needed
@@ -109,25 +113,20 @@ public class   TeleOpMode extends HwInit {
                     move_lift_down = true;
                     lift_up_timer.reset();
                 }
-                telemetry.addLine()
+                /*telemetry.addLine()
                         .addData("end of move up: lift UP: ", move_lift_up)
-                        .addData(" lift DOWN: ", move_lift_down);
+                        .addData(" lift DOWN: ", move_lift_down);*/
             }
             if (move_lift_down) {
                 lift.setPower(-1.0);
                 if (shooterPosSw.isLimitSwitchPressed()) {
-                telemetry.addLine()
+                /*telemetry.addLine()
                         .addData("down switch pressed: lift UP: " , move_lift_up)
-                        .addData(" lift DOWN: ", move_lift_down);
+                        .addData(" lift DOWN: ", move_lift_down);*/
                     move_lift_down = false;
                     lift.setPower(0.0);
                     liftPow = lift.getPower();
-
-                    //telemetry.addData("lift poooooooooooooooooooooooooooooooooooooooooower: ", liftPow);
                 }
-            /*telemetry.addLine()
-                    .addData("end lift down: lift UP: " , move_lift_up)
-                    .addData(" lift DOWN: ", move_lift_down);*/
             }
         } catch (Exception e) {
             telemetry.addLine("EXCEPTIONAL!!!");

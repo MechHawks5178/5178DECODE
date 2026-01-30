@@ -16,7 +16,7 @@ public class PIDshooterTuning extends OpMode
     // 2000;P= 7.3 F = 15.1
     public double med = 1500; //P = 9.92 F = 15.19
     double targetVelocity = med;
-    double P = 9.9;
+    double P = 300.0;
     double F = 14.3;
     double[] step_sizes = {10.0, 1.0, 0.1, 0.01, 0.001};
     int step_index = 1;

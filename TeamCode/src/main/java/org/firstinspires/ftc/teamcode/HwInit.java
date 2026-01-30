@@ -34,9 +34,9 @@ public abstract class HwInit extends OpMode
     DcMotor intake;
     DcMotorEx shooter;
     double shootVeloHigh = 1780.0;
-    PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(7.6, 0.0 ,0.0,15.2); //1780 RPM
+    PIDFCoefficients pidfCoefHigh = new PIDFCoefficients(300.0, 0.0 ,0.0,15.2); //1780 RPM
     double shootVeloMid = 1500.0;
-    PIDFCoefficients pidfCoefMed = new PIDFCoefficients(9.92, 0.0 ,0.0,15.19); //1500 RPM
+    PIDFCoefficients pidfCoefMed = new PIDFCoefficients(300.0, 0.0 ,0.0,15.19); //1500 RPM
     CRServo carousel;
     CRServo lift;
     MagneticLimit LoadSw = new MagneticLimit();
@@ -261,14 +261,20 @@ public abstract class HwInit extends OpMode
         limelight.updateRobotOrientation(robotYaw);
         LLResult result  = limelight.getLatestResult();
         if (result != null && result.isValid()) {
-            Pose3D botpose_mt2 = result.getBotpose_MT2();
-            if (botpose_mt2 != null)
-            {
-                double Tx = result.getTx();
-                double adjustment = 1.00 / 90 * abs(Tx);
-                int direction = Tx > 0 ? -1 : 1;
-                telemetry.addData("adjustment: ", "%.2f %d", adjustment, direction);
-                posTurn((float)adjustment, 1500, direction, 1);
+            if (!result.getFiducialResults().isEmpty()) {
+                current_tag = result.getFiducialResults().get(0).getFiducialId();
+            }
+            if (current_tag == 20 || current_tag == 24) {
+
+
+                Pose3D botpose_mt2 = result.getBotpose_MT2();
+                if (botpose_mt2 != null) {
+                    double Tx = result.getTx();
+                    double adjustment = 1.00 / 90 * abs(Tx);
+                    int direction = Tx > 0 ? -1 : 1;
+                    telemetry.addData("adjustment: ", "%.2f %d", adjustment, direction);
+                    posTurn((float) adjustment, 1500, direction, 1);
+                }
             }
         }
         return true;
@@ -311,6 +317,8 @@ public abstract class HwInit extends OpMode
     public void shooter_on_near()
     {
         //shooter.setPower(0.70);
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefMed);
+        shooter.setVelocity(shootVeloMid - 50);
     }
 
     public void run_lift_blocking()
@@ -352,7 +360,13 @@ public abstract class HwInit extends OpMode
         {
             carousel.setPower(0.0);
             move_to_shoot = false;
+            /*if (!ShootSw.isLimitSwitchClosed())
+            {
+                carousel.setPower(-1*dir*.01);
+                carousel.setPower(0.0);
+            }*/
         }
+
     }
     public void move_to_load_from_shoot(double dir)
     {
@@ -361,6 +375,11 @@ public abstract class HwInit extends OpMode
         {
             carousel.setPower(0.0);
             move_to_load = false;
+            /*if (!LoadSw.isLimitSwitchClosed())
+            {
+                carousel.setPower(-1*dir*.01);
+                carousel.setPower(0.0);
+            }*/
         }
     }
     public void move_to_next_shoot_blocking(double dir)
@@ -374,6 +393,20 @@ public abstract class HwInit extends OpMode
         do{
             carousel.setPower(dir * carousel_speed);
         } while(!ShootSw.isLimitSwitchClosed());
+        carousel.setPower(0.0);
+    }
+
+    public void move_to_next_load_blocking(double dir)
+    {
+        carousel.setPower(dir * carousel_speed);
+        try{
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        do{
+            carousel.setPower(dir * carousel_speed);
+        } while(!LoadSw.isLimitSwitchClosed());
         carousel.setPower(0.0);
     }
 
