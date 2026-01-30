@@ -92,7 +92,7 @@ public class AutoModeFarAndLoad extends HwInit {
 
       for (int i=0; i < pattern.length; i++)
       {
-          //update_light( pattern[i]=='P'? "PURPLE" : "GREEN" );
+          update_light( pattern[i]=='P'? "PURPLE" : "GREEN" );
           telemetry.addData("pattern color: ", pattern[i]);
           telemetry.addData("loop: ", i);
           telemetry.addData("carousel_pos; ", carousel_pos);
