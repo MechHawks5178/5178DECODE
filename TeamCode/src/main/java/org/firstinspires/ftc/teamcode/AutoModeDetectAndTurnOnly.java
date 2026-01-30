@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Detect And Turn Only")
+//UNcomment this line to use
+//@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Detect And Turn Only")
 public class AutoModeDetectAndTurnOnly extends HwInit {
 
     boolean DEBUG_ON = false;

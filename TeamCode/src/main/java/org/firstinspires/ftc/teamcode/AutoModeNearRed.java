@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Auto Mode Near Red")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="NO! Auto Mode Near Red")
 public class AutoModeNearRed extends HwInit
 {
     @Override
